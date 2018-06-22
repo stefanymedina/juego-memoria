@@ -1,0 +1,179 @@
+<html>
+  <head>
+    <title>Simon Dice</title
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+      <script src="js/sweet-alert2.js"></script>
+    <link rel="stylesheet" href="css/simon.css">
+    <link rel="stylesheet" href="css/animate.css">
+  </head>
+
+  <body>
+
+    <div id="keyboard" class="keyboard">
+      <div class="row">
+        <div class="key" data-key="81">q</div>
+        <div class="key" data-key="87">w</div>
+        <div class="key" data-key="69">e</div>
+        <div class="key" data-key="82">r</div>
+        <div class="key" data-key="84">t</div>
+        <div class="key" data-key="89">y</div>
+        <div class="key" data-key="85">u</div>
+        <div class="key" data-key="73">i</div>
+        <div class="key" data-key="79">o</div>
+        <div class="key" data-key="80">p</div>
+      </div>
+      <div class="row">
+        <div class="key" data-key="65">a</div>
+        <div class="key" data-key="83">s</div>
+        <div class="key" data-key="68">d</div>
+        <div class="key" data-key="70">f</div>
+        <div class="key" data-key="71">g</div>
+        <div class="key" data-key="72">h</div>
+        <div class="key" data-key="74">j</div>
+        <div class="key" data-key="75">k</div>
+        <div class="key" data-key="76">l</div>
+      </div>
+      <div class="row last">
+        <div class="key" data-key="90">z</div>
+        <div class="key" data-key="88">x</div>
+        <div class="key" data-key="67">c</div>
+        <div class="key" data-key="86">v</div>
+        <div class="key" data-key="66">b</div>
+        <div class="key" data-key="78">n</div>
+        <div class="key" data-key="77">m</div>
+      </div>
+    </div>
+  </body>
+
+    <script>
+
+    swal({
+      title: 'Juego de Memoria',
+      width: 600,
+      confirmButtonText:  'iniciar Juego',
+      padding: '3em',
+      backdrop: `
+        rgba(0,0,123,0.4)
+        url("img/76.gif")
+        center left
+        no-repeat
+      `
+    }).then((result) => {
+        if (result.value) {
+          siguienteNivel(0);
+        }
+      })
+
+
+        const niveles = 2 ;
+        let keys= generarTeclas(niveles)
+
+        function siguienteNivel(nivelActual){
+            if(nivelActual === niveles){
+            return    swal({
+               title: 'Ganaste',
+               showConfirmButton: false,
+               animation: false,
+               customClass: 'animated tada'
+              })
+            }
+
+            swal({
+              title: `Nivel ${nivelActual + 1}`,
+              showConfirmButton: false,
+              timer: 1000
+            })
+
+            setTimeout(()=>{
+
+            },   20000  )
+            for(let i=0; i <= nivelActual; i++  ){
+                setTimeout(()=> activate(keys[i]), 1500 * (i+1))
+
+            }
+                let i = 0;
+                let teclaActual = keys[i]
+                window.addEventListener('keydown', onkey)
+
+
+                function onkey(ev){
+                    if(ev.keyCode == teclaActual){
+                       activate(teclaActual, { success: true })
+                       i++
+                        if (i > nivelActual){
+                                window.removeEventListener('keydown', onkey)
+                                setTimeout(() => siguienteNivel(i), 1500)
+                            }
+                            teclaActual = keys[i]
+                        }else{
+                            activate(ev.keyCode , { fail:true })
+                            window.removeEventListener('keydown', onkey)
+                            setTimeout(() =>
+                                       {
+                                         swal({
+                                           title: 'Perdiste',
+                                           width: 600,
+                                           confirmButtonText:  'Intentarlo de nuevo',
+                                           padding: '3em',
+                                           backdrop: `
+                                             rgba(0,0,123,0.4)
+                                             url("img/loser.gif")
+                                             center left
+                                             no-repeat
+                                           `
+                                         }).then((result) => {
+                                             if (result.value) {
+                                               siguienteNivel(0);
+                                             }
+                                           })
+                            }, 1000)
+                        }
+                    }
+                }
+
+
+
+
+
+        // siguienteNivel(0)
+
+
+        function generarTeclas(niveles){
+            // estoy generando un nuevo array con las posiciones de los niveles y a su vez llenandolo con 0, luego ejecuto el metodo map de los array de manera que me devuelva un nuevo valor por cada elemento del array en este caso la funcion generar una tecla
+            return new Array(niveles).fill(0).map(generarUnaTecla)
+        }
+
+        function generarUnaTecla(){
+            const min=65
+            const max= 90
+            return Math.round(Math.random() * (max - min) + min)
+        }
+
+        //de este manera por medio de javascript estamos llamando a todo el elemnto del Dom que contenga como key-code el atributo que se le pase como parametro
+        function obtenerElementoCodigo(keyCode){
+        return document.querySelector(`[data-key="${keyCode}"]`)
+        }
+
+        function activate(keyCode, opts = {}){
+//              alert(keyCode);
+            const el = obtenerElementoCodigo(keyCode)
+            el.classList.add('active')
+            if(opts.success){
+                el.classList.add('success')
+            }else if (opts.fail){
+                el.classList.add('fail')
+            }
+            setTimeout(()=> desactivate(el), 500)
+
+
+        }
+        function desactivate(el){
+            el.className='Key'
+        }
+
+//        function desactivate
+    </script>
+  </body>
+</html>
