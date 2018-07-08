@@ -1,5 +1,6 @@
   let niveles
   let keys
+  let time
     swal({
       title: 'Juego de Memoria',
       width: 600,
@@ -24,23 +25,18 @@
         level.removeAttribute('hidden')
         let keyboard =  document.getElementById('keyboard')
 
-        // $("#bajo").on('click', ()=>{
-        //   this.niveles = 3
-        //   siguienteNivel(0)
-        //   $("#level").attr('hidden', true)
-        //   keyboard.removeAttribute('hidden')
-        //
-        // })
       }
-
 
         function nivelJugar(level){
           if(level == 0){
-            niveles = 5
+            niveles = 2
+            time = 1500
           }else if (level == 1){
            niveles = 10
+           time = 1000
           }else {
            niveles = 10
+           time = 500
           }
 
             keys= generarTeclas(niveles)
@@ -49,31 +45,30 @@
             keyboard.removeAttribute('hidden')
         }
 
-
-
-
-
-
-
         function siguienteNivel(nivelActual){
-          alert("hola"+ niveles);
             if(nivelActual === niveles){
             return    swal({
                title: 'Ganaste',
                showConfirmButton: false,
                animation: false,
-               customClass: 'animated tada'
+               customClass: 'animated tada',
+               padding: '3em',
+               backdrop: `
+                 rgba(0,0,123,0.4)
+                 url("img/winer.gif")
+                 center left
+                 no-repeat`
               })
             }
 
             swal({
               title: `Nivel ${nivelActual + 1}`,
               showConfirmButton: false,
-              timer: 1000
+              timer: time - 250
             })
 
             for(let i=0; i <= nivelActual; i++  ){
-                setTimeout(()=> activate(keys[i]), 1500 * (i+1))
+                setTimeout(()=> activate(keys[i]), time * (i+1))
 
             }
                 let i = 0;
